@@ -25,11 +25,19 @@ export default class HelloWorldSceneAR extends Component {
 
         // Set initial state here
         this.state = {
-            text : "Initializing AR..."
+            text : "Initializing AR...",
+            position: [0,-1,0]
         };
 
         // bind 'this' to functions
         this._onInitialized = this._onInitialized.bind(this);
+        this._onDrag = this._onDrag.bind(this);
+    }
+
+    _onDrag = (draggedToPosition, source) => {
+        this.setState({
+            position: [draggedToPosition[0], draggedToPosition[1], draggedToPosition[2]]
+        })
     }
 
     render() {
@@ -39,7 +47,7 @@ export default class HelloWorldSceneAR extends Component {
                 <ViroAmbientLight color={"#aaaaaa"} />
                 <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
                                position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
-                <ViroNode position={[0,-1,0]} dragType="FixedToPlane" onDrag={()=>{}} >
+                <ViroNode position={this.state.position} dragType="FixedToPlane" onDrag={this._onDrag} >
                     <Viro3DObject
                         source={require('./res/Mic.obj')}
                         resources={[require('./res/Mic.mtl')]}
