@@ -26,7 +26,8 @@ export default class HelloWorldSceneAR extends Component {
         // Set initial state here
         this.state = {
             text : "Initializing AR...",
-            position: [0,-1,0]
+            position: [0,-1,0],
+            renderMic: false,
         };
 
         // bind 'this' to functions
@@ -40,14 +41,10 @@ export default class HelloWorldSceneAR extends Component {
         })
     }
 
-    render() {
-        return (
-            <ViroARScene onTrackingUpdated={this._onInitialized} >
-                <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
-                <ViroAmbientLight color={"#aaaaaa"} />
-                <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
-                               position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
-                <ViroNode position={this.state.position} dragType="FixedToPlane" onDrag={this._onDrag} >
+    renderMicObj = () => {
+        if (this.state.renderMic) {
+            return (
+                <ViroNode position={this.state.position} dragType="FixedToWorld" onDrag={this._onDrag} >
                     <Viro3DObject
                         source={require('./res/Mic.obj')}
                         resources={[require('./res/Mic.mtl')]}
@@ -55,6 +52,21 @@ export default class HelloWorldSceneAR extends Component {
                         scale={[.2, .2, .2]}
                         type="OBJ" />
                 </ViroNode>
+            )
+        }
+        return null
+    }
+
+    render() {
+        return (
+            <ViroARScene onTrackingUpdated={this._onInitialized} >
+                <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
+                <ViroAmbientLight color={"#aaaaaa"} />
+                <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
+                               position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
+                <ViroARPlaneSelector minHeight={.5} minWidth={.5} onPlaneSelected={() => this.setState({renderMic: true})}>
+                    {this.renderMicObj()}
+                </ViroARPlaneSelector>
             </ViroARScene>
         );
     }
@@ -74,7 +86,7 @@ var styles = StyleSheet.create({
     helloWorldTextStyle: {
         fontFamily: 'Arial',
         fontSize: 30,
-        color: '#ffffff',
+        color: 'red',
         textAlignVertical: 'center',
         textAlign: 'center',
     },
