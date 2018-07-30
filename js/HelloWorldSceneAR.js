@@ -8,13 +8,11 @@ import {
     ViroARScene,
     ViroText,
     ViroConstants,
-    ViroBox,
     ViroMaterials,
     Viro3DObject,
     ViroAmbientLight,
     ViroSpotLight,
     ViroARPlaneSelector,
-    ViroNode,
     ViroAnimations,
 } from 'react-viro';
 
@@ -26,7 +24,7 @@ export default class HelloWorldSceneAR extends Component {
         // Set initial state here
         this.state = {
             text : "Initializing AR...",
-            position: [0,-1,0],
+            position: [0,0,0],
             renderMic: false,
         };
 
@@ -44,14 +42,12 @@ export default class HelloWorldSceneAR extends Component {
     renderMicObj = () => {
         if (this.state.renderMic) {
             return (
-                <ViroNode position={this.state.position} dragType="FixedToWorld" onDrag={this._onDrag} >
-                    <Viro3DObject
-                        source={require('./res/Mic.obj')}
-                        resources={[require('./res/Mic.mtl')]}
-                        position={[-.5, .5, -1]}
-                        scale={[.2, .2, .2]}
-                        type="OBJ" />
-                </ViroNode>
+                <Viro3DObject
+                    source={require('./res/Mic.obj')}
+                    resources={[require('./res/Mic.mtl')]}
+                    position={[0, -1, 1]}
+                    scale={[.5, .5, .5]}
+                    type="OBJ" />
             )
         }
         return null
@@ -72,11 +68,11 @@ export default class HelloWorldSceneAR extends Component {
     }
 
     _onInitialized(state, reason) {
-        if (state == ViroConstants.TRACKING_NORMAL) {
+        if (state === ViroConstants.TRACKING_NORMAL) {
             this.setState({
                 text : "Hello Reverb!"
             });
-        } else if (state == ViroConstants.TRACKING_NONE) {
+        } else if (state === ViroConstants.TRACKING_NONE) {
             // Handle loss of tracking
         }
     }
